@@ -107,7 +107,8 @@ class LinesOfActionState(State):
             return False
         
         # full row
-        if self.__grid[row][col] != LinesOfActionState.EMPTY_CELL:
+        if self.__grid[row][col] != LinesOfActionState.EMPTY_CELL and self.__grid[row][col] == self.__acting_player:
+            print("Essa posição já está ocupada pela sua peça!")
             return False
 
         return True
@@ -115,7 +116,12 @@ class LinesOfActionState(State):
     def update(self, action: LinesOfActionAction):
         col = action.get_col()
         row = action.get_row()
-       
+        old_col = action.get_old_col()
+        old_row = action.get_old_row()
+    
+    # remove the checker from the old position
+        self.__grid[old_row][old_col] = -1
+    
         # drop the checker
         self.__grid[row][col] = self.__acting_player
         # determine if there is a winner
@@ -125,6 +131,7 @@ class LinesOfActionState(State):
         self.__acting_player = 1 if self.__acting_player == 0 else 0
 
         self.__turns_count += 1
+        
 
     def __display_cell(self, row, col):
         mapping = {
@@ -204,11 +211,3 @@ class LinesOfActionState(State):
         if self.__grid[row][col] == self.__acting_player:
             return True
         return False
-
-    
-    def remove_piece(self, row, col):
-        """
-        Remove a peça na posição (row, col) do tabuleiro.
-        Assume que há uma peça nessa posição.
-        """
-        self.__grid[row][col] = LinesOfActionState.EMPTY_CELL

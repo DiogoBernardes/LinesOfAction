@@ -13,15 +13,14 @@ class HumanLinesOfActionPlayer(LinesOfActionPlayer):
         while True:
             try:
                 print("Qual a peça que deseja mover?")
-                actual_col = int(input(f"Player {state.get_acting_player()}, choose a column: "))
-                actual_row = int(input(f"Player {state.get_acting_player()}, choose a row: "))
-                if state.get_piece(actual_row, actual_col):
+                old_col = int(input(f"Player {state.get_acting_player()}, choose a column: "))
+                old_row = int(input(f"Player {state.get_acting_player()}, choose a row: "))
+                if state.get_piece(old_row, old_col):
                     print("Qual a posição para a qual deseja mover?")
                     col = int(input(f"Player {state.get_acting_player()}, choose a column: "))
                     row = int(input(f"Player {state.get_acting_player()}, choose a row: "))
-                    if (actual_row, actual_col) != (row, col):
-                        state.remove_piece(actual_row, actual_col)
-                    return LinesOfActionAction(col, row) #Cell(actual_col, actual_row))
+                    if state.validate_action:
+                        return LinesOfActionAction(col, row,old_col, old_row) #Cell(actual_col, actual_row))
                 else:
                     print("There is no piece of yours in that position. Please choose a valid move.")
             except Exception:
