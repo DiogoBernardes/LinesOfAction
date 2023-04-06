@@ -20,7 +20,7 @@ class HumanLinesOfActionPlayer(LinesOfActionPlayer):
                     col = int(input(f"Player {state.get_acting_player()}, choose a column: "))
                     row = int(input(f"Player {state.get_acting_player()}, choose a row: "))
                     if state.validate_action:
-                        return LinesOfActionAction(col, row,old_col, old_row) #Cell(actual_col, actual_row))
+                        return LinesOfActionAction(col, row,old_col, old_row) 
                 else:
                     print("There is no piece of yours in that position. Please choose a valid move.")
             except Exception:

@@ -51,7 +51,7 @@ class LinesOfActionState(State):
         determine if a winner was found already 
         """
         self.__has_winner = False
-
+        
     def check_winner(self, player):
         # Verificar linhas horizontais
         for row in range(self.__size):
@@ -89,7 +89,6 @@ class LinesOfActionState(State):
 
         return False
 
-
     def get_grid(self):
         return self.__grid
 
@@ -111,6 +110,7 @@ class LinesOfActionState(State):
             print("Essa posição já está ocupada pela sua peça!")
             return False
 
+        
         return True
 
     def update(self, action: LinesOfActionAction):
@@ -119,7 +119,7 @@ class LinesOfActionState(State):
         old_col = action.get_old_col()
         old_row = action.get_old_row()
     
-    # remove the checker from the old position
+        # remove the checker from the old position
         self.__grid[old_row][old_col] = -1
     
         # drop the checker
@@ -131,6 +131,7 @@ class LinesOfActionState(State):
         self.__acting_player = 1 if self.__acting_player == 0 else 0
 
         self.__turns_count += 1
+        
         
 
     def __display_cell(self, row, col):
@@ -170,11 +171,11 @@ class LinesOfActionState(State):
         self.__display_numbers()
         print("")
 
-    def __is_full(self):
+    """ def __is_full(self):
         return self.__turns_count > (self.__size * self.__size)
-
+ """
     def is_finished(self) -> bool:
-        return self.__has_winner or self.__is_full()
+        return self.__has_winner
 
     def get_acting_player(self) -> int:
         return self.__acting_player
@@ -211,3 +212,9 @@ class LinesOfActionState(State):
         if self.__grid[row][col] == self.__acting_player:
             return True
         return False
+    
+    def get_piece_p1(self,row,col):
+        if self.__grid[row][col] == 0:
+            return True
+        return False
+    
