@@ -98,6 +98,14 @@ class LinesOfActionState(State):
     def validate_action(self, action: LinesOfActionAction) -> bool:
         col = action.get_col()
         row = action.get_row()
+        old_col = action.get_old_col()
+        old_row = action.get_old_row()
+        count_v = 0
+        count_h = 0
+        start_x = 0
+        start_y = 0
+        end_x = 0
+        end_y = 0
         # valid column
         if col < 0 or col >= self.__size:
             return False
@@ -109,9 +117,55 @@ class LinesOfActionState(State):
         if self.__grid[row][col] != LinesOfActionState.EMPTY_CELL and self.__grid[row][col] == self.__acting_player:
             print("Essa posição já está ocupada pela sua peça!")
             return False
-
         
+        # Verificar se a peça pertence ao jogador que está a jogar
+        if self.__grid[old_row][old_col] != self.__acting_player:
+            print("Apenas pode mover as suas peças!")
+            return False
+
+
+        # Verificar se o movimento foi realizado em linha reta
+        diff_x = abs(col - old_col)
+        diff_y = abs(row - old_row)
+    
+        # Verificar se há peças a bloquear o caminho do movimento   
+        if diff_x == 0:  # movimento na vertical
+            start = min(old_row, row)
+            end = max(old_row, row)
+            for r in range(start+1, end):
+                if self.__grid[r][col] != LinesOfActionState.EMPTY_CELL and self.__grid[r][col] != self.__acting_player:
+                    print("Não pode passar por cima das peças do seu oponente!")
+                    return False
+        elif diff_y == 0:  # movimento na horizontal
+            start = min(old_col, col)
+            end = max(old_col, col)
+            for c in range(start+1, end):
+                if  self.__grid[row][c] != LinesOfActionState.EMPTY_CELL and self.__grid[row][c] != self.__acting_player:
+                    print("Não pode passar por cima das peças do seu oponente!")
+                    return False
+        else:  # movimento na diagonal
+            start_x = min(old_col, col)
+            start_y = min(old_row, row)
+            end_x = max(old_col, col)
+            end_y = max(old_row, row)
+        for i in range(1, end_x - start_x):
+            r = start_y + i
+            c = start_x + i
+            if  self.__grid[r][c] != LinesOfActionState.EMPTY_CELL and self.__grid[r][c] != self.__acting_player:
+                print("Não pode passar por cima das peças do seu oponente!")
+            return False
+
+                              
+
+
+        """ for old_col in range(self.__grid[row][old_col]):
+            if self.__grid[row][old_col] != LinesOfActionState.EMPTY_CELL:
+                count_v +=1
+        for old_row in range(self.__grid[old_row])[col]:
+            if self.__grid[old_row][col] != LinesOfActionState.EMPTY_CELL:
+                count_h +=1 """
         return True
+    
 
     def update(self, action: LinesOfActionAction):
         col = action.get_col()
