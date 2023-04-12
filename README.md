@@ -1,7 +1,7 @@
 # LinesOfAction
-	The goal of this project is to develop skills in solution search algorithms and to evaluate the
+The goal of this project is to develop skills in solution search algorithms and to evaluate the
 practical part of the Artificial Intelligence course.
-	The project objective is implement a two-player board game, in this case the game is the LinesOfAction, including the game modes: human vs. human, human vs. computer, and computer vs. computer. The computer must have at least three difficulty levels and a command-line interface.
+The project objective is implement a two-player board game, in this case the game is the LinesOfAction, including the game modes: human vs. human, human vs. computer, and computer vs. computer. The computer must have at least three difficulty levels and a command-line interface.
 
 ## Stack
 ![Python](https://img.shields.io/badge/Python-14354C?style=for-the-badge&logo=python&logoColor=white)

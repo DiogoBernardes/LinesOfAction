@@ -100,12 +100,14 @@ class LinesOfActionState(State):
         row = action.get_row()
         old_col = action.get_old_col()
         old_row = action.get_old_row()
-        count_v = 0
-        count_h = 0
+        count_v = 1
+        count_h = 1
+        count_diag = 1
         start_x = 0
         start_y = 0
         end_x = 0
         end_y = 0
+
         # valid column
         if col < 0 or col >= self.__size:
             return False
@@ -132,38 +134,52 @@ class LinesOfActionState(State):
         if diff_x == 0:  # movimento na vertical
             start = min(old_row, row)
             end = max(old_row, row)
-            for r in range(start+1, end):
+            for r in range(start+1, end): #Verificar se há peças a bloquear o caminho na vertical
                 if self.__grid[r][col] != LinesOfActionState.EMPTY_CELL and self.__grid[r][col] != self.__acting_player:
                     print("Não pode passar por cima das peças do seu oponente!")
                     return False
+            for v in range(0,7): #Verifica o numero de peças existentes na vertical
+                if self.__grid[v][col] != LinesOfActionState.EMPTY_CELL:
+                    count_v += 1
+            print(count_v)
+            if diff_y > count_v: #Verifica o numero de posições que a peça pode ser movida na linha vertical
+                print(f"\nA peça {old_col,old_row} apenas pode ser movimentada {count_v} posições na linha vertical\n")
+                return False
+            
         elif diff_y == 0:  # movimento na horizontal
             start = min(old_col, col)
             end = max(old_col, col)
-            for c in range(start+1, end):
+            for c in range(start+1, end): #Verificar se há peças a bloquear o caminho na horizontal
                 if  self.__grid[row][c] != LinesOfActionState.EMPTY_CELL and self.__grid[row][c] != self.__acting_player:
                     print("Não pode passar por cima das peças do seu oponente!")
                     return False
+            for h in range(0,7): #Verifica o numero de peças existentes na horizontal
+                if self.__grid[row][h] != LinesOfActionState.EMPTY_CELL:
+                    count_h += 1  
+            if diff_x > count_h: #Verifica o numero de posições que a peça pode ser movida na linha horizontal
+                print(f"\nA peça {old_col,old_row} apenas pode ser movimentada {count_h} posições na linha horizontal\n")
+                return False
+            
         else:  # movimento na diagonal
             start_x = min(old_col, col)
             start_y = min(old_row, row)
             end_x = max(old_col, col)
             end_y = max(old_row, row)
-        for i in range(1, end_x - start_x):
+        for i in range(1, end_x - start_x): #Verificar se há peças a bloquear o caminho na diagonal
             r = start_y + i
             c = start_x + i
-            if  self.__grid[r][c] != LinesOfActionState.EMPTY_CELL and self.__grid[r][c] != self.__acting_player:
-                print("Não pode passar por cima das peças do seu oponente!")
-            return False
-
-                              
-
-
-        """ for old_col in range(self.__grid[row][old_col]):
-            if self.__grid[row][old_col] != LinesOfActionState.EMPTY_CELL:
-                count_v +=1
-        for old_row in range(self.__grid[old_row])[col]:
-            if self.__grid[old_row][col] != LinesOfActionState.EMPTY_CELL:
-                count_h +=1 """
+            if r < 0 or r >= self.__size and c < 0 or c >= self.__size:
+                if  self.__grid[r][c] != LinesOfActionState.EMPTY_CELL and self.__grid[r][c] != self.__acting_player:
+                    print("Não pode passar por cima das peças do seu oponente!")
+                    return False
+        for d in range(end_x - start_x): #Verifica o numero de peças existentes na diagonal 
+            r = start_y + d
+            c = start_x + d
+            if self.__grid[r][c] != LinesOfActionState.EMPTY_CELL:
+                count_diag += 1
+        """  if end_x - start_x != count_diag:
+            print(f"A peça apenas pode ser movimentada {count_diag} posições na linha diagonal")
+            return False """
         return True
     
 
@@ -189,23 +205,22 @@ class LinesOfActionState(State):
         
 
     def __display_cell(self, row, col):
-        mapping = {
+        print ({
             0: 'X',
             1: 'O',
             LinesOfActionState.EMPTY_CELL: ' '
-        }
-        key = self.__grid[row][col]
-        print(mapping.get(key, key), end="")
+        }[self.__grid[row][col]], end="")
 
     def __display_numbers(self):
+        print("  ", end="")
         for col in range(0, self.__size):
-                if col < 10:
-                    print(' ', end="")
-                print(col, end="")
-
+            if col < 10:
+                print(' ', end="")
+            print(col, end="")
         print("")
 
     def __display_separator(self):
+        print("  ", end="")
         for col in range(0, self.__size):
             print("--", end="")
         print("-")
@@ -215,7 +230,7 @@ class LinesOfActionState(State):
         self.__display_separator()
 
         for row in range(0, self.__size):
-            print('|', end="")
+            print(f'{row} |', end="")
             for col in range(0, self.__size):
                 self.__display_cell(row, col)
                 print('|', end="")
