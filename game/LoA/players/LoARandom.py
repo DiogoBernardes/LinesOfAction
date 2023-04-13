@@ -13,7 +13,7 @@ class RandomLinesOfActionPlayer(LinesOfActionPlayer):
 
     def get_action(self, state: LinesOfActionState):
         
-           # obter as posições de todas as peças do jogador atual
+        #obter as posições de todas as peças do jogador atual
         player_positions = []
         for row in range(state.get_num_rows()):
             for col in range(state.get_num_cols()):

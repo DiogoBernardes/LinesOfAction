@@ -208,6 +208,7 @@ class LinesOfActionState(State):
 
         self.__turns_count += 1
         
+        self.count_pieces()
         
 
     def __display_cell(self, row, col):
@@ -244,11 +245,12 @@ class LinesOfActionState(State):
             self.__display_separator()
 
         self.__display_numbers()
-        print("")
-
+        print("\n")
+        self.count_pieces()
+     
     """ def __is_full(self):
         return self.__turns_count > (self.__size * self.__size)
- """
+    """
     def is_finished(self) -> bool:
         return self.__has_winner
 
@@ -292,4 +294,22 @@ class LinesOfActionState(State):
         if self.__grid[row][col] == 0:
             return True
         return False
+    
+    def count_pieces(self):
+        count_piece_p1 = 0
+        count_piece_p2 = 0
+        player_positions1 = []
+        player_positions2 = []
+        for row in range(self.__size):
+            for col in range(self.__size):
+                if self.__grid[row][col] == 0:
+                    player_positions1.append((row, col))
+                if self.__grid[row][col] == 1:
+                    player_positions2.append((row,col))
+        for i in range(len(player_positions1)):
+            count_piece_p1 += 1
+        for i in range(len(player_positions2)):
+            count_piece_p2 += 1
+        return count_piece_p1, count_piece_p2
+
     
