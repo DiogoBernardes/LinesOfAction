@@ -51,43 +51,92 @@ class LinesOfActionState(State):
         determine if a winner was found already 
         """
         self.__has_winner = False
-        
-    def check_winner(self, player):
-        # Verificar linhas horizontais
-        for row in range(self.__size):
-            count = 0
-            for col in range(self.__size):
-                if self.__grid[row][col] == player:
-                    count += 1
-            if count == self.__size:
-                return True
-
-        # Verificar linhas verticais
-        for col in range(self.__size):
-            count = 0
+    
+    def check_winner(self) -> bool:
+            player_positions1 = []
+            player_positions2 = []
             for row in range(self.__size):
-                if self.__grid[row][col] == player:
-                    count += 1
-            if count == self.__size:
+                for col in range(self.__size):
+                    if self.__grid[row][col] == 0:
+                        player_positions1.append((row, col))
+                    elif self.__grid[row][col] == 1:
+                        player_positions2.append((row, col))
+
+            if len(player_positions1) == 1:
+                self.__has_winner = 0
+                # se o jogador tiver apenas uma peÃ§a, ele venceu o jogo
                 return True
+            elif len(player_positions2) == 1:
+                self.__has_winner = 1
+                return True
+            
+            if self.checkConnected(0) == len(player_positions1):
+                self.__has_winner = 0
+                return True
+            elif self.checkConnected(1) == len(player_positions2):
+                self.__has_winner = 1
+                return True
+            else:
+                return False
 
-        # Verificar diagonal principal
-        count = 0
+    def checkConnected(self, player):
+        count = 0 
+        visited = set()
+        
         for i in range(self.__size):
-            if self.__grid[i][i] == player:
-                count += 1
-        if count == self.__size:
-            return True
+            for j in range(self.__size):
+                has_adjacent =  False   
+                if self.__grid[i][j] == player and (i,j) not in visited:
+                    count += 1
+                    visited.add((i,j))
+                    
+                    if i-1 > -1 and self.__grid[i-1][j] == player and (i-1,j) not in visited:
+                        has_adjacent = True
+                    if j-1 > -1 and self.__grid[i][j-1] == player and (i,j-1) not in visited:
+                        has_adjacent = True
+                    if i+1 < self.__size and self.__grid[i+1][j] == player and (i+1,j) not in visited:
+                        has_adjacent = True
+                    if j+1 < self.__size and self.__grid[i][j+1] == player and (i,j+1) not in visited:
+                        has_adjacent = True
+                    if i-1 > -1 and j-1 > -1 and self.__grid[i-1][j-1] == player and (i-1,j-1) not in visited:
+                        has_adjacent = True
+                    if i+1 < self.__size and j+1 < self.__size and self.__grid[i+1][j+1] == player and (i+1,j+1) not in visited:
+                        has_adjacent = True
+                    if i-1 > -1 and j+1 < self.__size and self.__grid[i-1][j+1] == player and (i-1,j+1) not in visited:
+                        has_adjacent = True
+                    if i+1 < self.__size and j-1 > -1 and self.__grid[i+1][j-1] == player and (i+1,j-1) not in visited:
+                        has_adjacent = True
+                    if has_adjacent == False:
+                        count = 0 
+                        visited = set()
+                        for i in range(self.__size-1, -1, -1):
+                            for j in range(self.__size):
+                                has_adjacent =  False  
+                                if self.__grid[i][j] == player and (i,j) not in visited:
+                                    count += 1
+                                    visited.add((i,j))
 
-        # Verificar diagonal secundária
-        count = 0
-        for i in range(self.__size):
-            if self.__grid[i][self.__size - 1 - i] == player:
-                count += 1
-        if count == self.__size:
-            return True
+                                    if i-1 > -1 and self.__grid[i-1][j] == player and (i-1,j) not in visited:
+                                        has_adjacent = True
+                                    if j-1 > -1 and self.__grid[i][j-1] == player and (i,j-1) not in visited:
+                                        has_adjacent = True
+                                    if i+1 < self.__size and self.__grid[i+1][j] == player and (i+1,j) not in visited:
+                                        has_adjacent = True
+                                    if j+1 < self.__size and self.__grid[i][j+1] == player and (i,j+1) not in visited:
+                                        has_adjacent = True
+                                    if i-1 > -1 and j-1 > -1 and self.__grid[i-1][j-1] == player and (i-1,j-1) not in visited:
+                                        has_adjacent = True
+                                    if i+1 < self.__size and j+1 < self.__size and self.__grid[i+1][j+1] == player and (i+1,j+1) not in visited:
+                                        has_adjacent = True
+                                    if i-1 > -1 and j+1 < self.__size and self.__grid[i-1][j+1] == player and (i-1,j+1) not in visited:
+                                        has_adjacent = True
+                                    if i+1 < self.__size and j-1 > -1 and self.__grid[i+1][j-1] == player and (i+1,j-1) not in visited:
+                                        has_adjacent = True
+                                    if has_adjacent == False:
+                                        return count
+                
+        return count
 
-        return False
 
     def get_grid(self):
         return self.__grid
@@ -134,7 +183,7 @@ class LinesOfActionState(State):
         if diff_x == 0:  # movimento na vertical
             start = min(old_row, row)
             end = max(old_row, row)
-            for r in range(start+1, end): #Verificar se há peças a bloquear o caminho na vertical
+            for r in range(+1, end): #Verificar se há peças a bloquear o caminho na vertical
                 if self.__grid[r][col] != LinesOfActionState.EMPTY_CELL and self.__grid[r][col] != self.__acting_player:
                     print("Não pode passar por cima das peças do seu oponente!")
                     return False
@@ -201,7 +250,7 @@ class LinesOfActionState(State):
         # drop the checker
         self.__grid[row][col] = self.__acting_player
         # determine if there is a winner
-        self.__has_winner = self.check_winner(self.__acting_player)
+        self.check_winner()
 
         # switch to next player
         self.__acting_player = 1 if self.__acting_player == 0 else 0
@@ -246,7 +295,6 @@ class LinesOfActionState(State):
 
         self.__display_numbers()
         print("\n")
-        self.count_pieces()
      
     """ def __is_full(self):
         return self.__turns_count > (self.__size * self.__size)

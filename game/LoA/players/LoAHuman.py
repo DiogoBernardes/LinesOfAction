@@ -15,18 +15,18 @@ class HumanLinesOfActionPlayer(LinesOfActionPlayer):
             try:
                 print("Qual a peça que deseja mover?")
                 print()
-                old_col = int(input(f"Player {state.get_acting_player()}, choose a column: "))
-                old_row = int(input(f"Player {state.get_acting_player()}, choose a row: "))
+                old_col = int(input(f"Jogador {state.get_acting_player()}, escolha a coluna: "))
+                old_row = int(input(f"Jogador {state.get_acting_player()}, escolha a linha: "))
                 if state.get_piece(old_row, old_col):
                     os.system('cls' if os.name == 'nt' else 'clear')
                     state.display()
                     print(f"Qual a posição para a qual deseja mover a peça ({old_col}, {old_row})?")
-                    col = int(input(f"Player {state.get_acting_player()}, choose a column: "))
-                    row = int(input(f"Player {state.get_acting_player()}, choose a row: "))
-                    if state.validate_action:
+                    col = int(input(f"Jogador {state.get_acting_player()}, escolha a coluna: "))
+                    row = int(input(f"Jogador {state.get_acting_player()}, escolha a linha: "))
+                    if state.validate_action:   
                         return LinesOfActionAction(col, row,old_col, old_row) 
                 else:
-                    print("There is no piece of yours in that position. Please choose a valid move.")
+                    print("Não existe nenhuma peça sua nessa posição, por favor escolha uma posição válida!")
             except Exception:
                 continue
 

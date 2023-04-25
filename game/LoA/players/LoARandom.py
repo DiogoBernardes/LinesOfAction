@@ -29,7 +29,7 @@ class RandomLinesOfActionPlayer(LinesOfActionPlayer):
 
         # gerar uma nova posição aleatória
         new_row, new_col = randint(0, state.get_num_rows() - 1), randint(0, state.get_num_cols() - 1)
-        print(f"Player {state.get_acting_player()} movimentou a peça {old_col,old_row} para a posição {new_col,new_row}")
+        #print(f"Player {state.get_acting_player()} movimentou a peça {old_col,old_row} para a posição {new_col,new_row}")
         # criar e retornar a ação correspondente
         return LinesOfActionAction(new_col, new_row, old_col, old_row)
         

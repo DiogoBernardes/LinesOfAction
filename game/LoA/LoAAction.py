@@ -25,3 +25,4 @@ class LinesOfActionAction:
     def get_old_row(self):
         return self.__old_row
     
+ 
