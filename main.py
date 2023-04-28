@@ -31,7 +31,7 @@ def main():
         choice = input("\nDigite o número da opção escolhida: ")
         if choice == "1":
             os.system('cls' if os.name == 'nt' else 'clear')
-            sim_name = "LinesOfAction - Human vs Human"
+            sim_name = "LinesOfAction - Humano vs Humano"
             player1 = HumanLinesOfActionPlayer("Player1")
             player2 = HumanLinesOfActionPlayer("Player2")
             break
