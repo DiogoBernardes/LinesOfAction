@@ -1,5 +1,5 @@
 from typing import Optional
-
+import copy 
 from game.LoA.LoAAction import LinesOfActionAction
 from game.LoA.LoAResult import LinesOfActionResult
 from game.state import State
@@ -17,12 +17,6 @@ class LinesOfActionState(State):
     
         self.__size = size
 
-        """
-        the dimensions of the board
-        """
-        """
-        the grid
-        """
         #Criar a grelha do jogo
         self.__grid = [[LinesOfActionState.EMPTY_CELL for _ in range(self.__size)] for _ in range(self.__size)]
 
@@ -36,20 +30,10 @@ class LinesOfActionState(State):
             self.__grid[row][0] = 1
             self.__grid[row][7] = 1
 
-
-        """
-        counts the number of turns in the current game
-        """
         self.__turns_count = 1
 
-        """
-        the index of the current acting player
-        """
         self.__acting_player = 0
-
-        """
-        determine if a winner was found already 
-        """
+        
         self.__has_winner = False
     
     def check_winner(self) -> bool:
@@ -58,13 +42,14 @@ class LinesOfActionState(State):
             for col in range(self.__size):
                 if self.__grid[row][col] == self.__acting_player:
                     player_positions.append((row, col))
-         # se o jogador tiver apenas uma peÃ§a, ele venceu o jogo
+         # se o jogador tiver apenas uma peça, ele vence o jogo
         if len(player_positions) == 1:
             return True
 
-        return max(self.checkConnected_Horizontal_LR(self.__acting_player),
-                   self.checkConnected_Vertical_LR(self.__acting_player),
-                   self.checkConnected_Horizontal_RL(self.__acting_player), self.checkConnected_Vertical_RL(self.__acting_player)) == len(player_positions)
+        return max(len(self.checkConnected_Horizontal_LR(self.__acting_player)),
+                   len(self.checkConnected_Vertical_LR(self.__acting_player)),
+                   len(self.checkConnected_Horizontal_RL(self.__acting_player)), 
+                   len(self.checkConnected_Vertical_RL(self.__acting_player))) == len(player_positions)
 
     def checkConnected_Horizontal_LR(self, player):
         count = 0 
@@ -95,8 +80,8 @@ class LinesOfActionState(State):
                         has_adjacent = True
                   
                     if has_adjacent == False:
-                       return count
-        return count
+                       return visited
+        return visited
     
     def checkConnected_Horizontal_RL(self, player):
         count = 0 
@@ -125,8 +110,8 @@ class LinesOfActionState(State):
                     if i+1 < self.__size and j-1 > -1 and self.__grid[i+1][j-1] == player and (i+1,j-1) not in visited:
                         has_adjacent = True
                     if has_adjacent == False:
-                        return count
-        return count
+                        return visited
+        return visited
     
     def checkConnected_Vertical_LR(self, player):
         count = 0 
@@ -156,8 +141,8 @@ class LinesOfActionState(State):
                     if i+1 < self.__size and j-1 > -1 and self.__grid[i+1][j-1] == player and (i+1,j-1) not in visited:
                         has_adjacent = True
                     if has_adjacent == False:
-                        return count
-        return count
+                        return visited
+        return visited
                         
     def checkConnected_Vertical_RL(self,player):
         count = 0 
@@ -186,8 +171,8 @@ class LinesOfActionState(State):
                     if i+1 < self.__size and j-1 > -1 and self.__grid[i+1][j-1] == player and (i+1,j-1) not in visited:
                         has_adjacent = True
                     if has_adjacent == False:
-                        return count                
-        return count
+                        return visited                
+        return visited
 
 
     def get_grid(self):
@@ -309,10 +294,6 @@ class LinesOfActionState(State):
 
         self.__turns_count += 1
         
-        #self.count_pieces(self.__acting_player)
-        
-  
-        
 
     def __display_cell(self, row, col):
         print ({
@@ -364,9 +345,7 @@ class LinesOfActionState(State):
         cloned_state.__turns_count = self.__turns_count
         cloned_state.__acting_player = self.__acting_player
         cloned_state.__has_winner = self.__has_winner
-        for row in range(0, self.__size):
-            for col in range(0, self.__size):
-                cloned_state.__grid[row][col] = self.__grid[row][col]
+        cloned_state.__grid = copy.deepcopy(self.__grid)
         return cloned_state
 
     def get_result(self, pos) -> Optional[LinesOfActionResult]:
@@ -397,16 +376,52 @@ class LinesOfActionState(State):
             return True
         return False
     
+    def get_piece_p2(self,row,col):
+        if self.__grid[row][col] == 1:
+            return True
+        return False
+    
+    def sim_play(self,action):
+        new_state = self.clone()
+        new_state.play(action)
+        return new_state
+    
+    def get_possible_moves(self, player):
+    # Retorna uma lista de todas as jogadas possíveis para o jogador atual
+        moves = []
+        for i in range(self.__size):
+            for j in range(self.__size):
+                if self.__grid[i][j] == player:
+                    for x in range(self.__size):
+                        for y in range(self.__size):
+                            if self.__grid[x][y] != player:
+                                moves.append(LinesOfActionAction(y,x,j,i))
+        for move in moves:
+            print(move.get_old_col(),move.get_old_row(), move.get_col(),move.get_row())
 
-    def count_pieces(self,player):
-        count_pieces = 0
-        player_positions = []
-        for row in range(self.__size):
-            for col in range(self.__size):
-                if self.__grid[row][col] == player:
-                    player_positions.append((row,col))
-        
-        count_pieces = len(player_positions)
-            
-        return count_pieces
-        
+        return list(filter(
+            lambda action: self.validate_action(action),
+            moves
+        ))
+
+    
+    def connected_components(self, player):
+      return max(self.checkConnected_Horizontal_LR(player),
+                self.checkConnected_Vertical_LR(player),
+                self.checkConnected_Horizontal_RL(player), 
+                self.checkConnected_Vertical_RL(player))
+    
+    def get_adjacent_cells(self, row, col):
+        # Lista de offsets das posições adjacentes
+        offsets = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+        adjacent_cells = []
+
+        for offset in offsets:
+            neighbor_row = row + offset[0]
+            neighbor_col = col + offset[1]
+
+            # Verifica se a posição é válida
+            if 0 <= neighbor_row < 8 and 0 <= neighbor_col < 8:
+                adjacent_cells.append((neighbor_row, neighbor_col))
+
+        return adjacent_cells

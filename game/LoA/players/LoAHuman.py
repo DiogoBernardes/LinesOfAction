@@ -23,8 +23,7 @@ class HumanLinesOfActionPlayer(LinesOfActionPlayer):
                     print(f"Qual a posição para a qual deseja mover a peça ({old_col}, {old_row})?")
                     col = int(input(f"Jogador {state.get_acting_player()}, escolha a coluna: "))
                     row = int(input(f"Jogador {state.get_acting_player()}, escolha a linha: "))
-                    if state.validate_action:   
-                        return LinesOfActionAction(col, row,old_col, old_row) 
+                    return LinesOfActionAction(col, row,old_col, old_row) 
                 else:
                     print("Não existe nenhuma peça sua nessa posição, por favor escolha uma posição válida!")
             except Exception:
