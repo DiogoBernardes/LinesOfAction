@@ -37,7 +37,6 @@ def main():
         if choice == "1":
             os.system('cls' if os.name == 'nt' else 'clear')
             print("Regras do jogo:")
-            # Aqui você pode imprimir as regras do jogo usando a função "print"
             print("- Em cada volta, o jogador tem que mover uma peça, um certo número de casas em linha reta. O número de casas que pode movimentar é exatamente igual ao número de peças, independentemente da sua cor, que existem na linha de movimento.")
             print("- O jogador pode saltar por cima das próprias peças.")
             print("- O jogador não pode saltar por cima das peças do adversário, mas pode captura-las, se a sua peça parar sobre a peça do adversário.")

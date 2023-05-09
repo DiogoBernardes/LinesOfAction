@@ -12,9 +12,9 @@ class MonteCarloLinesOfActionPlayer(LinesOfActionPlayer):
     def get_action(self, state: LinesOfActionState):
         selected_action = None
         max_score = -1
-        cont = 1
+        count = 1
         
-        actions = state.get_possible_moves(self.get_current_pos())
+        actions = state.get_possible_moves(state.get_acting_player())
         loop = len(actions) 
         for check_action in actions:
             new_state = state.sim_play(check_action)
@@ -22,8 +22,8 @@ class MonteCarloLinesOfActionPlayer(LinesOfActionPlayer):
             if score > max_score:
                 max_score = score
                 selected_action = check_action
-            print(f"CALCULAR JOGADA: {cont}/{loop} | SCORE: {score}/{max_score}")
-            cont +=1
+            print(f"CALCULAR JOGADA: {count}/{loop} | SCORE: {score}/{max_score}")
+            count +=1
         return selected_action
 
     def monte_carlo(self, state: LinesOfActionState):
@@ -31,12 +31,11 @@ class MonteCarloLinesOfActionPlayer(LinesOfActionPlayer):
         losses = 0
         draws = 0
 
-        for i in range(500):
+        for i in range(100):
             cloned_state = state.clone()
             while not cloned_state.is_finished():
                 possible_moves = cloned_state.get_possible_moves(cloned_state.get_acting_player)
                 if len(possible_moves) == 0:
-                    # No more moves available, game ends with a draw
                     draws += 1
                     break
                 action = choice(possible_moves)
@@ -50,7 +49,7 @@ class MonteCarloLinesOfActionPlayer(LinesOfActionPlayer):
             elif result == LinesOfActionResult.DRAW:
                 draws += 1
 
-        return (wins + draws* 0.25) / (wins + losses + draws)
+        return (wins + draws * 0.25) / (wins + losses + draws)
 
     def event_action(self, pos: int, action: LinesOfActionAction, new_state: LinesOfActionState):
         # ignore

@@ -269,7 +269,7 @@ class LinesOfActionState(State):
                 return False 
             
         if diff_x != 0 and diff_y != 0 and end_x - start_x != end_y - start_y:
-            print("Os movimentos apenas podem ser realizados na linha horizontal, vertical ou diagonal")
+            #print("Os movimentos apenas podem ser realizados na linha horizontal, vertical ou diagonal")
             return False
         
         return True
@@ -396,9 +396,6 @@ class LinesOfActionState(State):
                         for y in range(self.__size):
                             if self.__grid[x][y] != player:
                                 moves.append(LinesOfActionAction(y,x,j,i))
-        for move in moves:
-            print(move.get_old_col(),move.get_old_row(), move.get_col(),move.get_row())
-
         return list(filter(
             lambda action: self.validate_action(action),
             moves
@@ -411,17 +408,4 @@ class LinesOfActionState(State):
                 self.checkConnected_Horizontal_RL(player), 
                 self.checkConnected_Vertical_RL(player))
     
-    def get_adjacent_cells(self, row, col):
-        # Lista de offsets das posições adjacentes
-        offsets = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
-        adjacent_cells = []
-
-        for offset in offsets:
-            neighbor_row = row + offset[0]
-            neighbor_col = col + offset[1]
-
-            # Verifica se a posição é válida
-            if 0 <= neighbor_row < 8 and 0 <= neighbor_col < 8:
-                adjacent_cells.append((neighbor_row, neighbor_col))
-
-        return adjacent_cells
+ 
