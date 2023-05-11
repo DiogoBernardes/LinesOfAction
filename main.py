@@ -32,7 +32,8 @@ def main():
         print("5 - Human vs Greedy")
         print("6 - Human vs Monte Carlo")
         print("7 - Random vs Random")
-        print("8 - Sair")
+        print("8 - Random vs Greedy")
+        print("9 - Sair")
 
         choice = input("\nDigite o número da opção escolhida: ")
         if choice == "1":
@@ -86,6 +87,14 @@ def main():
             num_iterations = int (input("Escreve o Número de iterações desejadas: "))
             break
         elif choice == "8":
+            os.system('cls' if os.name == 'nt' else 'clear')
+            sim_name = "LinesOfAction - Random vs Greedy"
+            player1 = RandomLinesOfActionPlayer("Random1")
+            player2 = GreedyLinesOfActionPlayer("Greedy2")
+            print ("\n----- Numero de iterações:----- ")
+            num_iterations = int (input("Escreve o Número de iterações desejadas: "))
+            break
+        elif choice == "9":
             os.system('cls' if os.name == 'nt' else 'clear')
             print("Até logo!")
             return
