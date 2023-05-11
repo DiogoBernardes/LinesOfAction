@@ -17,8 +17,13 @@ class RandomLinesOfActionPlayer(LinesOfActionPlayer):
         player_positions = []
         for row in range(state.get_num_rows()):
             for col in range(state.get_num_cols()):
-                if state.get_piece_p1(row,col):
-                    player_positions.append((row, col))
+                if state.get_acting_player() == 0:
+                    if state.get_piece_p1(row,col):
+                        player_positions.append((row, col))
+                else:
+                    if state.get_piece_p2(row,col):
+                        player_positions.append((row,col))
+                        
 
         # escolher uma das peças aleatoriamente
         if player_positions:

@@ -31,7 +31,8 @@ def main():
         print("4 - Human vs Minimax")
         print("5 - Human vs Greedy")
         print("6 - Human vs Monte Carlo")
-        print("7 - Sair")
+        print("7 - Random vs Random")
+        print("8 - Sair")
 
         choice = input("\nDigite o número da opção escolhida: ")
         if choice == "1":
@@ -78,10 +79,19 @@ def main():
             break
         elif choice == "7":
             os.system('cls' if os.name == 'nt' else 'clear')
+            sim_name = "LinesOfAction - Random vs Random"
+            player1 = RandomLinesOfActionPlayer("Random1")
+            player2 = RandomLinesOfActionPlayer("Random2")
+            print ("\n----- Numero de iterações:----- ")
+            num_iterations = int (input("Escreve o Número de iterações desejadas: "))
+            break
+        elif choice == "8":
+            os.system('cls' if os.name == 'nt' else 'clear')
             print("Até logo!")
             return
         else:
             print("Opção inválida.")
+        
 
     LoA_simulations = [
         {
@@ -93,6 +103,7 @@ def main():
 
     for sim in LoA_simulations:
         run_simulation(sim["name"], LinesOfActionSimulator(sim["player1"], sim["player2"]), num_iterations)
+        num_iterations = 1
 
 if __name__ == "__main__":
     main()
